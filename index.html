@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go On A Lunch Date With Me?</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinkPastel: '#ffb6c1',
+                        pinkDeep: '#ff69b4',
+                        pinkLight: '#fff0f5',
+                        bluePastel: '#aec6cf',
+                        blueDeep: '#1e90ff',
+                        blueLight: '#f0f8ff',
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ffdde1 35%, #e0c3fc 70%, #aec6cf 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Glassmorphism card container */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(255, 105, 180, 0.25), 0 10px 25px -5px rgba(30, 144, 255, 0.2);
+        }
+
+        /* Smooth animation for the runaway No button */
+        #btn-no {
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, top, left;
+            z-index: 50;
+        }
+
+        /* Pulse glow effect for primary action button */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.6), 0 0 35px rgba(30, 144, 255, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 0 50px rgba(30, 144, 255, 0.5); }
+        }
+
+        .pulse-btn {
+            animation: pulseGlow 2.5s infinite;
+        }
+
+        /* Ambient floating background hearts */
+        .bg-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 8s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.6) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* Smooth step transition animations */
+        .animate-fade-in {
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Cute floating avatar bounce */
+        .avatar-float {
+            animation: floatAvatar 3s ease-in-out infinite;
+        }
+
+        @keyframes floatAvatar {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 min-h-screen">
+
+    <div id="ambient-hearts" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <div id="setup-banner" class="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md border border-pink-200 px-4 py-2 rounded-full shadow-lg text-xs font-semibold text-gray-700 flex items-center gap-2 max-w-sm sm:max-w-md">
+        <span>📧 <strong>Creator Setup:</strong> Get email notifications via Web3Forms!</span>
+        <button onclick="document.getElementById('setup-banner').style.display='none'" class="text-gray-400 hover:text-gray-600 ml-auto">✕</button>
+    </div>
+
+    <main class="glass-card max-w-lg w-full rounded-[2.5rem] p-6 sm:p-10 text-center relative z-10 transition-all duration-500 my-auto">
+
+        <!-- ================= STEP 1: The Question ================= -->
+        <div id="step-1" class="animate-fade-in">
+            
+            <!-- Cute Doctor Smiley Avatar -->
+            <div class="relative w-36 h-36 mx-auto mb-6 avatar-float">
+                <div class="absolute inset-0 bg-gradient-to-r from-pinkPastel to-bluePastel rounded-full blur-xl opacity-70 animate-pulse"></div>
+                <div class="relative w-full h-full bg-gradient-to-tr from-pinkLight via-white to-blueLight rounded-full border-4 border-white shadow-inner flex items-center justify-center overflow-hidden">
+                    <!-- SVG Doctor Smiley Illustration -->
+                    <svg class="w-28 h-28 transform hover:scale-105 transition-transform" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Happy Face Base -->
+                        <circle cx="50" cy="46" r="32" fill="#FFD97D"/>
+                        <!-- Cheeks -->
+                        <ellipse cx="33" cy="51" rx="5" ry="3" fill="#FF8B94" opacity="0.8"/>
+                        <ellipse cx="67" cy="51" rx="5" ry="3" fill="#FF8B94" opacity="0.8"/>
+                        <!-- Happy Curved Eyes -->
+                        <path d="M 32 41 Q 38 32 44 41" stroke="#4A3E3D" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <path d="M 56 41 Q 62 32 68 41" stroke="#4A3E3D" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <!-- Doctor Cap / Headband -->
+                        <rect x="28" y="14" width="44" height="15" rx="5" fill="#1E90FF"/>
+                        <!-- White Medical Cross -->
+                        <rect x="47" y="17" width="6" height="9" rx="1" fill="#FFFFFF"/>
+                        <rect x="45.5" y="18.5" width="9" height="6" rx="1" fill="#FFFFFF"/>
+                        <rect x="47" y="18.5" width="6" height="6" fill="#FF69B4"/>
+                        <!-- Big Happy Smile -->
+                        <path d="M 36 53 Q 50 68 64 53" stroke="#4A3E3D" stroke-width="4" stroke-linecap="round" fill="#FF6B81"/>
+                        <path d="M 39 54 Q 50 64 61 54" fill="#FFFFFF"/>
+                        <!-- Stethoscope -->
+                        <path d="M 27 55 C 27 76, 73 76, 73 55" stroke="#1E90FF" stroke-width="4" stroke-linecap="round" fill="none"/>
+                        <circle cx="50" cy="74" r="5.5" fill="#A1C4FD" stroke="#333" stroke-width="1.5"/>
+                        <circle cx="50" cy="74" r="2" fill="#FFF"/>
+                    </svg>
+                </div>
+                <!-- Cute Badges -->
+                <span class="absolute top-0 right-1 text-2xl animate-spin" style="animation-duration: 6s;">✨</span>
+                <span class="absolute bottom-1 left-1 text-2xl">🩺</span>
+            </div>
+
+            <!-- Title & Subtitle -->
+            <div class="inline-block bg-pink-100 text-pinkDeep px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider mb-3 border border-pink-200 shadow-sm">
+                Special Invitation 💌
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-black font-title text-gray-800 mb-3 leading-tight">
+                Will you go on a <span class="text-transparent bg-clip-text bg-gradient-to-r from-pinkDeep to-blueDeep">lunch date</span> with me tomorrow?
+            </h1>
+            
+            <p class="text-gray-600 font-semibold mb-8 text-base sm:text-lg">
+                Doctor's orders: Good food, sweet treats & non-stop smiles! 😊
+            </p>
+
+            <!-- Interactive Buttons Container -->
+            <div id="button-stage" class="relative min-h-[110px] flex items-center justify-center gap-4 sm:gap-6">
+                <!-- YES BUTTON -->
+                <button id="btn-yes" class="pulse-btn bg-gradient-to-r from-pinkDeep via-purple-400 to-blueDeep hover:from-pink-600 hover:to-blue-600 text-white font-extrabold text-xl py-4 px-10 rounded-full shadow-xl transform transition-all hover:scale-110 active:scale-95 flex items-center gap-2 cursor-pointer border-2 border-white/60">
+                    <span>YES!</span>
+                    <span class="text-2xl">💖</span>
+                </button>
+
+                <!-- EVASIVE RUNAWAY NO BUTTON -->
+                <button id="btn-no" class="bg-white/90 hover:bg-white text-gray-500 font-bold text-base py-3.5 px-7 rounded-full shadow-md border-2 border-gray-200 cursor-pointer flex items-center gap-1 select-none whitespace-nowrap">
+                    <span id="no-text">No</span>
+                    <span id="no-emoji" class="text-lg">😜</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= STEP 2: Restaurant Selection ================= -->
+        <div id="step-2" class="hidden">
+            <div class="mb-3">
+                <span class="bg-blue-100 text-blueDeep px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider border border-blue-200">
+                    Step 2: Choose Your Craving 🥪
+                </span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-black font-title text-gray-800 mb-2">
+                Awesome! Pick a lunch spot you'd love:
+            </h2>
+            <p class="text-gray-600 font-semibold text-sm sm:text-base mb-6">
+                Where should we head for lunch tomorrow?
+            </p>
+
+            <!-- Restaurant Options Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 text-left" id="restaurant-grid">
+                <!-- Card 1 -->
+                <button type="button" data-place="Cozy Italian Bistro 🍝" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-pink-200 hover:border-pinkDeep rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🍝</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Italian Bistro</span>
+                </button>
+
+                <!-- Card 2 -->
+                <button type="button" data-place="Sushi Bar & Fusion 🍣" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-blue-200 hover:border-blueDeep rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🍣</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Sushi Bar</span>
+                </button>
+
+                <!-- Card 3 -->
+                <button type="button" data-place="Cozy Cafe & Bakery ☕" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-pink-200 hover:border-pinkDeep rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">☕</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Cafe & Bakery</span>
+                </button>
+
+                <!-- Card 4 -->
+                <button type="button" data-place="Tacos & Mexican 🌮" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-blue-200 hover:border-blueDeep rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🌮</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Tacos & Mexican</span>
+                </button>
+
+                <!-- Card 5 -->
+                <button type="button" data-place="Gourmet Burgers 🍔" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-pink-200 hover:border-pinkDeep rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🍔</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Gourmet Burgers</span>
+                </button>
+
+                <!-- Card 6 -->
+                <button type="button" data-place="Surprise Me! 🎁" class="restaurant-card group bg-white/80 hover:bg-white border-2 border-purple-200 hover:border-purple-400 rounded-2xl p-3.5 transition-all shadow-sm flex flex-col items-center text-center gap-1.5">
+                    <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🎁</span>
+                    <span class="font-bold text-gray-800 text-xs sm:text-sm">Surprise Me!</span>
+                </button>
+            </div>
+
+            <!-- Confirm Choice Button -->
+            <button id="btn-confirm-place" disabled class="w-full bg-gradient-to-r from-pinkDeep to-blueDeep text-white font-extrabold text-lg py-4 px-6 rounded-2xl shadow-lg opacity-50 cursor-not-allowed transition-all flex items-center justify-center gap-2">
+                <span id="confirm-btn-text">Confirm Selection</span>
+                <span id="confirm-btn-spinner" class="hidden animate-spin">⏳</span>
+                <span id="confirm-btn-sparkle" class="text-xl">✨</span>
+            </button>
+        </div>
+
+        <!-- ================= STEP 3: Celebration ================= -->
+        <div id="step-3" class="hidden">
+            <div class="mb-3 flex justify-center">
+                <div class="w-24 h-24 bg-gradient-to-tr from-pinkPastel to-bluePastel rounded-full flex items-center justify-center shadow-lg transform rotate-6 border-4 border-white animate-bounce">
+                    <span class="text-5xl">🥳</span>
+                </div>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl font-black font-title text-transparent bg-clip-text bg-gradient-to-r from-pinkDeep to-blueDeep mb-2">
+                It's a date! 🩺💖
+            </h1>
+            
+            <p class="text-gray-700 font-extrabold text-lg mb-4">
+                See you tomorrow for lunch!
+            </p>
+
+            <div class="bg-gradient-to-r from-pinkLight to-blueLight border-2 border-pinkPastel rounded-2xl p-5 mb-6 shadow-sm">
+                <span class="text-xs uppercase font-extrabold tracking-wider text-gray-400 block mb-1">Chosen Lunch Spot</span>
+                <span id="chosen-place-display" class="text-2xl font-black font-title text-pinkDeep block"></span>
+            </div>
+
+            <div class="p-4 bg-white/80 rounded-2xl border border-gray-100 text-xs font-semibold text-gray-500">
+                ✨ Your answer was sent automatically! Get ready for a wonderful time tomorrow! 🥰
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /* =========================================================================
+           CONFIG: WEB3FORMS API KEY FOR INVISIBLE BACKGROUND EMAIL NOTIFICATION
+           -------------------------------------------------------------------------
+           1. Go to https://web3forms.com/ (Free, instant access key to your email)
+           2. Replace the key string below with your Web3Forms Access Key.
+           3. When she selects a restaurant, her response is sent invisibly!
+           ========================================================================= */
+        const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+
+        /* STATE VARIABLES */
+        let selectedRestaurant = '';
+        let runawayCount = 0;
+
+        // Evasive No Button Phrases
+        const runawayPhrases = [
+            { text: "No", emoji: "😜" },
+            { text: "Too slow!", emoji: "💨" },
+            { text: "Try again!", emoji: "🙈" },
+            { text: "YES is right there! 👉", emoji: "💖" },
+            { text: "Catch me!", emoji: "🏃‍♀️" },
+            { text: "Oops, missed!", emoji: "✨" },
+            { text: "Can't click me!", emoji: "😋" }
+        ];
+
+        /* DOM ELEMENTS */
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+        const noText = document.getElementById('no-text');
+        const noEmoji = document.getElementById('no-emoji');
+
+        const restaurantCards = document.querySelectorAll('.restaurant-card');
+        const btnConfirmPlace = document.getElementById('btn-confirm-place');
+        const confirmBtnText = document.getElementById('confirm-btn-text');
+        const confirmBtnSpinner = document.getElementById('confirm-btn-spinner');
+        const confirmBtnSparkle = document.getElementById('confirm-btn-sparkle');
+
+        const chosenPlaceDisplay = document.getElementById('chosen-place-display');
+
+        /* RUNAWAY "NO" BUTTON LOGIC */
+        function moveNoButton() {
+            runawayCount++;
+            btnNo.style.position = 'fixed';
+            
+            const btnWidth = btnNo.offsetWidth || 100;
+            const btnHeight = btnNo.offsetHeight || 45;
+            
+            const padding = 25;
+            const maxW = window.innerWidth - btnWidth - padding;
+            const maxH = window.innerHeight - btnHeight - padding;
+            
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxW));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxH));
+            
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+
+            const phrase = runawayPhrases[runawayCount % runawayPhrases.length];
+            noText.textContent = phrase.text;
+            noEmoji.textContent = phrase.emoji;
+        }
+
+        btnNo.addEventListener('mouseenter', moveNoButton);
+        btnNo.addEventListener('mousemove', moveNoButton);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        /* STEP 1 -> STEP 2 */
+        btnYes.addEventListener('click', () => {
+            step1.classList.add('hidden');
+            btnNo.style.display = 'none'; // Hide Runaway button completely
+            step2.classList.remove('hidden');
+            step2.classList.add('animate-fade-in');
+        });
+
+        /* STEP 2: RESTAURANT SELECTION */
+        restaurantCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Clear previous active card styling
+                restaurantCards.forEach(c => {
+                    c.classList.remove('border-pinkDeep', 'border-blueDeep', 'border-purple-400', 'bg-white', 'ring-4', 'ring-pink-200', 'ring-blue-200');
+                    c.classList.add('bg-white/80');
+                });
+
+                // Set selected style
+                card.classList.add('border-pinkDeep', 'bg-white', 'ring-4', 'ring-pink-200');
+                selectedRestaurant = card.getAttribute('data-place');
+
+                // Enable confirm button
+                btnConfirmPlace.disabled = false;
+                btnConfirmPlace.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnConfirmPlace.classList.add('hover:scale-[1.02]', 'active:scale-95', 'pulse-btn');
+            });
+        });
+
+        /* STEP 2 -> STEP 3: INVISIBLE BACKGROUND RESPONSE SUBMISSION */
+        btnConfirmPlace.addEventListener('click', async () => {
+            if (!selectedRestaurant) return;
+
+            // UI feedback while sending in background
+            btnConfirmPlace.disabled = true;
+            confirmBtnText.textContent = "Sending...";
+            confirmBtnSpinner.classList.remove('hidden');
+            confirmBtnSparkle.classList.add('hidden');
+
+            // Send Invisible Response via Web3Forms API in background
+            await sendBackgroundResponse(selectedRestaurant);
+
+            // Transition to Step 3 Celebration Screen
+            step2.classList.add('hidden');
+            step3.classList.remove('hidden');
+            step3.classList.add('animate-fade-in');
+
+            chosenPlaceDisplay.textContent = selectedRestaurant;
+
+            // Trigger full celebration confetti & hearts
+            triggerCelebrationConfetti();
+        });
+
+        /* INVISIBLE BACKGROUND FETCH FUNCTION */
+        async function sendBackgroundResponse(restaurantChoice) {
+            // Fallback log if user hasn't configured key yet
+            if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
+                console.warn("Web3Forms Key not set. Response registered locally:", restaurantChoice);
+                // Simulate quick delay for smooth UI transition
+                await new Promise(resolve => setTimeout(resolve, 600));
+                return;
+            }
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        access_key: WEB3FORMS_ACCESS_KEY,
+                        subject: "💕 Lunch Date Accepted!",
+                        from_name: "Date Invitation App",
+                        message: `She accepted your lunch date for tomorrow!\n\nChosen Lunch Spot: ${restaurantChoice}`,
+                        restaurant_choice: restaurantChoice,
+                        date_accepted: new Date().toLocaleString()
+                    })
+                });
+                
+                const result = await response.json();
+                console.log("Background email send status:", result);
+            } catch (error) {
+                console.error("Background submission error:", error);
+            }
+        }
+
+        function triggerCelebrationConfetti() {
+            if (typeof confetti === 'function') {
+                // Burst 1
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#ffb6c1', '#ff69b4', '#aec6cf', '#1e90ff', '#ffd97d']
+                });
+
+                // Burst 2 (Sides)
+                setTimeout(() => {
+                    confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
+                    confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+                }, 250);
+            }
+        }
+
+        /* BACKGROUND AMBIENT HEARTS */
+        function generateAmbientHearts() {
+            const container = document.getElementById('ambient-hearts');
+            const emojis = ['💖', '💕', '🌸', '✨', '💙', '🥪', '🩺'];
+            
+            for (let i = 0; i < 16; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heart.style.fontSize = `${1.2 + Math.random() * 1.4}rem`;
+                container.appendChild(heart);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', generateAmbientHearts);
+    </script>
+</body>
+</html>
