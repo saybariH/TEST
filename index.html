@@ -286,7 +286,7 @@
            2. Replace the key string below with your Web3Forms Access Key.
            3. When she selects a restaurant, her response is sent invisibly!
            ========================================================================= */
-        const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+        const WEB3FORMS_ACCESS_KEY = "c7e7d52b-3949-41bb-b962-84247599bce4";
 
         /* STATE VARIABLES */
         let selectedRestaurant = '';
@@ -406,7 +406,7 @@
         /* INVISIBLE BACKGROUND FETCH FUNCTION */
         async function sendBackgroundResponse(restaurantChoice) {
             // Fallback log if user hasn't configured key yet
-            if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
+            if (WEB3FORMS_ACCESS_KEY === "c7e7d52b-3949-41bb-b962-84247599bce4") {
                 console.warn("Web3Forms Key not set. Response registered locally:", restaurantChoice);
                 // Simulate quick delay for smooth UI transition
                 await new Promise(resolve => setTimeout(resolve, 600));
